@@ -21,7 +21,7 @@ const toggleMenu = () => {
 <template>
   <header class="header">
     <div class="container header-container">
-      <h1 class="logo">VIRTUAL STUDIO</h1>
+      <router-link to="/" class="logo">VIRTUAL STUDIO</router-link>
       <button class="menu-toggle" @click="toggleMenu" aria-label="Toggle menu">
         <span></span>
         <span></span>
@@ -66,6 +66,12 @@ const toggleMenu = () => {
   font-weight: 700;
   letter-spacing: 2px;
   color: var(--primary-color);
+  text-decoration: none;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .nav {
