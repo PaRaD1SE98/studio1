@@ -54,8 +54,10 @@ onMounted(async () => {
     <section class="hero" ref="heroRef">
       <div class="hero-background" :style="parallaxStyle"></div>
       <div class="hero-content" :class="{ 'content-visible': isBackgroundLoaded }">
-        <h1 class="hero-title">VIRTUAL ARTIST STUDIO</h1>
-        <p class="hero-subtitle">Creating Tomorrow's Virtual Stars</p>
+        <div class="content-wrapper">
+          <h1 class="hero-title">VIRTUAL ARTIST STUDIO</h1>
+          <p class="hero-subtitle">Creating Tomorrow's Virtual Stars</p>
+        </div>
       </div>
     </section>
 
@@ -116,7 +118,7 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
               url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30') center/cover;
   will-change: transform;
   transition: all 0.1s ease-out;
@@ -134,18 +136,46 @@ onMounted(async () => {
   }
 }
 
+.content-wrapper {
+  position: relative;
+  padding: 2rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 110%;
+    height: 120%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0) 80%
+    );
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+}
+
 .hero-title {
   font-size: 4rem;
-  font-weight: 700;
-  letter-spacing: 4px;
+  font-weight: 900;
+  letter-spacing: 6px;
   margin-bottom: 1rem;
-  color: var(--primary-color);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
-  color: var(--text-color);
-  letter-spacing: 2px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .about-text {
@@ -210,12 +240,16 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2.5rem;
-    letter-spacing: 2px;
+    letter-spacing: 4px;
   }
 
   .hero-subtitle {
     font-size: 1.2rem;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+  }
+
+  .content-wrapper {
+    padding: 1.5rem;
   }
 
   .about-text {
@@ -237,10 +271,16 @@ onMounted(async () => {
 @media (max-width: 480px) {
   .hero-title {
     font-size: 2rem;
+    letter-spacing: 3px;
   }
 
   .hero-subtitle {
     font-size: 1rem;
+    letter-spacing: 1.5px;
+  }
+
+  .content-wrapper {
+    padding: 1rem;
   }
 }
 </style>
