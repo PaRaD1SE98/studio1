@@ -1,8 +1,37 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref, computed } from 'vue'
+import { useScroll } from '@vueuse/core'
 import gsap from 'gsap'
 
-onMounted(() => {
+const { y } = useScroll(window)
+const heroRef = ref<HTMLElement | null>(null)
+const isBackgroundLoaded = ref(false)
+
+const parallaxStyle = computed(() => {
+  const scrolled = Math.min(y.value / window.innerHeight, 1)
+  const scale = 1 + scrolled * 0.2
+  const blur = scrolled * 5
+  const opacity = 1 - scrolled * 0.5
+
+  return {
+    transform: `scale(${scale})`,
+    filter: `blur(${blur}px)`,
+    opacity: opacity
+  }
+})
+
+const loadBackground = () => {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.src = 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30'
+    img.onload = () => resolve(true)
+  })
+}
+
+onMounted(async () => {
+  await loadBackground()
+  isBackgroundLoaded.value = true
+  
   gsap.from('.hero-title', {
     opacity: 0,
     y: 50,
@@ -22,8 +51,9 @@ onMounted(() => {
 
 <template>
   <main>
-    <section class="hero">
-      <div class="hero-content">
+    <section class="hero" ref="heroRef">
+      <div class="hero-background" :style="parallaxStyle"></div>
+      <div class="hero-content" :class="{ 'content-visible': isBackgroundLoaded }">
         <h1 class="hero-title">VIRTUAL ARTIST STUDIO</h1>
         <p class="hero-subtitle">Creating Tomorrow's Virtual Stars</p>
       </div>
@@ -72,16 +102,36 @@ onMounted(() => {
 <style scoped lang="scss">
 .hero {
   height: 100vh;
-  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-              url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30') center/cover;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
 }
 
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+              url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30') center/cover;
+  will-change: transform;
+  transition: all 0.1s ease-out;
+}
+
 .hero-content {
+  position: relative;
+  z-index: 1;
   padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.content-visible {
+    opacity: 1;
+  }
 }
 
 .hero-title {
